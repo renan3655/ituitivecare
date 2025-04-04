@@ -1,0 +1,73 @@
+Criação das tabelas necessárias para o CSV
+
+CREATE TABLE operadoras_saude (
+    id SERIAL PRIMARY KEY,
+    registro_ans INT NOT NULL,
+    cnpj VARCHAR(14) NOT NULL,
+    razao_social TEXT NOT NULL,
+    nome_fantasia TEXT,
+    modalidade TEXT NOT NULL,
+    logradouro TEXT NOT NULL,
+    numero VARCHAR(50),
+    complemento TEXT,
+    bairro TEXT NOT NULL,
+    cidade TEXT NOT NULL,
+    uf CHAR(2) NOT NULL,
+    cep VARCHAR(8) NOT NULL,
+    ddd VARCHAR(2),
+    telefone VARCHAR(30),
+    fax VARCHAR(30),
+    email TEXT,
+    representante TEXT NOT NULL,
+    cargo_representante TEXT NOT NULL,
+    regiao_comercializacao INT,
+    data_registro_ans DATE NOT NULL
+);
+
+CREATE TABLE dados_contabeis (
+    data DATE,
+    reg_ans INTEGER,
+    cd_conta_contabil VARCHAR(20),
+    descricao TEXT,
+    vl_saldo_inicial NUMERIC,
+    vl_saldo_final NUMERIC
+);
+
+
+Importação do conteúdo dos arquivos CSV, com encoding correto
+
+COPY operadoras_saude (
+    registro_ans, cnpj, razao_social, nome_fantasia, modalidade, logradouro, 
+    numero, complemento, bairro, cidade, uf, cep, ddd, telefone, fax, email, 
+    representante, cargo_representante, regiao_comercializacao, data_registro_ans
+)
+FROM 'G:/Python/Relatorio_cadop.csv'
+DELIMITER ';'
+CSV HEADER
+ENCODING 'LATIN1';
+
+
+
+Listar as 10 operadoras com mais registros
+
+SELECT razao_social, COUNT(*) AS total_registros
+FROM operadoras_saude
+GROUP BY razao_social
+ORDER BY total_registros DESC
+LIMIT 10;
+
+
+Quantidade de operadoras por Estado (UF)
+
+SELECT uf, COUNT(*) AS total_operadoras
+FROM operadoras_saude
+GROUP BY uf
+ORDER BY total_operadoras DESC;
+
+
+Quais modalidades de operadoras existem e quantas são?
+SELECT modalidade, COUNT(*) AS total
+FROM operadoras_saude
+GROUP BY modalidade
+ORDER BY total DESC;
+
